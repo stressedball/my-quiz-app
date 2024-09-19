@@ -18,12 +18,32 @@ export default function GameProvider({ children }) {
         }
         setLevel(level + 1);
     };
+    const handleNewGame = () => {
+        setScore(0);
+        setLevel(0);
+        setQuestions([]);
+        setCurrentQuestion(null);
+        fetchData();
+        setEndGame(false);
+        setStartGame(true);
+    };
 
-    useEffect(() => {
+    const fetchData = () => {
         fetch("https://opentdb.com/api.php?amount=5")
             .then((d) => d.json())
             .then((d) => setQuestions(d.results))
-            .catch((e) => console.log(e));
+            .catch(() => {
+                alert("Quota de requêtes atteint. Veuillez patientez.");
+                setTimeout(() => {
+                    fetchData();
+                }, 1000);
+            });
+    };
+
+    useEffect(() => {
+        return () => {
+            fetchData();
+        };
     }, []);
 
     useEffect(() => {
@@ -47,6 +67,7 @@ export default function GameProvider({ children }) {
                 handleNextLevel,
                 handleAnswer,
                 score,
+                handleNewGame,
             }}
         >
             {children}

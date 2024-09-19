@@ -1,12 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { GameContext } from "./GameContext";
+import { decode } from "html-entities";
 
 export const Game = () => {
     const { currentQuestion, handleAnswer, startGame, endGame, score, level } =
         useContext(GameContext);
     const [answers, setAnswers] = useState([]);
-
-    console.log(currentQuestion);
 
     useEffect(() => {
         if (currentQuestion == undefined) return;
@@ -17,23 +16,34 @@ export const Game = () => {
     }, [currentQuestion]);
 
     if (startGame == false || endGame == true) return null;
-    // if (!Array.isArray(questions)) {
-    //     return <p>Loading</p>;
-    // }
 
     return (
         <>
-            <p>Score: {score}</p>
+            <p className="text-center text-xl">Score: {score}</p>
+
             <p>Question n°{level + 1}</p>
-            <p>{currentQuestion?.question}</p>
+
+            <p className="text-center text-xl my-3">
+                {decode(currentQuestion?.question)}
+            </p>
+
             {answers.map((a) => (
-                <button
+                <p
+                    className="
+                        p-2 border rounded-md my-1
+                        min-w-16
+                        text-center
+                        hover:cursor-pointer
+                        hover:border-slate-400
+                        hover:text-slate-400
+                        "
                     key={answers.indexOf(a)}
                     onClick={() => handleAnswer(a)}
                 >
-                    {a}
-                </button>
+                    {decode(a)}
+                </p>
             ))}
+            <div></div>
         </>
     );
 };
